@@ -2,6 +2,8 @@ package com.fackathon.controller;
 
 import com.fackathon.domain.Account;
 import com.fackathon.domain.MessagePopup;
+import com.fackathon.domain.Rate;
+import com.fackathon.service.RateCalculationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,10 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class MainController {
+
+    private final RateCalculationService rateCalculationService;
 
     @GetMapping("/")
     public String getRegister(Model model) {
@@ -46,6 +51,24 @@ public class MainController {
         model.addAttribute("messagePopup", MessagePopup.success("Consider something changed!"));
         model.addAttribute("accountList", new ArrayList<>());
         return "accounts";
+    }
+
+    @GetMapping("/websites")
+    public String getWebsites(Model model) {
+        model.addAttribute("hostsList", new ArrayList<>());
+        return "websites";
+    }
+
+    @GetMapping("/rates")
+    public String getRates(Model model) {
+        List<Rate> rates = rateCalculationService.computeRates();
+        if (rates != null) {
+            model.addAttribute("rateList", rates);
+        } else {
+            model.addAttribute("messagePopup", MessagePopup.success("I did not like your Json!"));
+            model.addAttribute("rateList", new ArrayList<>());
+        }
+        return "rates";
     }
 
 }

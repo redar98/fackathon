@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Platform rates – Fackathon</title>
+
+    <link rel="stylesheet" th:href="@{private/css/main.css}"/>
+</head>
+
+<body>
+    <th:block th:include="partials/navbar :: navbar"></th:block>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12 pre-scrollable">
+                <div class="wrapper special-list fadeInDown">
+                    <ul class="custom-list-group">
+                        <h3 th:if="${#lists.isEmpty(rateList)}">There are no blocked domains at the moment...</h3>
+                        <li class="list-group-item accounts-list-item" id="domain-blocked" th:each="rate: ${rateList}">
+                            <form th:action="@{/delete/rate}" method="post">
+                                <label class="accounts-label" th:text="${rate.number} + ' -- ' + ${rate.percentage} + '%'"></label>
+<!--                                <button type="submit" class="btn btn-success account-delete-btn">Grant Access</button>-->
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <th:block th:include="partials/footer :: footer"></th:block>
+</body>
+</html>
