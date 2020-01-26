@@ -1,9 +1,6 @@
 package com.fackathon.service;
 
-import com.fackathon.domain.JsonRate;
-import com.fackathon.domain.PlatformTrust;
-import com.fackathon.domain.Rate;
-import com.fackathon.domain.Reviewer;
+import com.fackathon.domain.*;
 import com.fackathon.utils.FileManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -16,15 +13,29 @@ import java.util.List;
 public class RateCalculationService {
 
     @Value("${metacritic.rates.sample.file}")
-    private String ratesJson;
+    private String metacriticRatesJson;
 
-    public List<Rate> computeRates() {
-        String fileContent = FileManager.getFileContents(ratesJson);
+    @Value("${imdb.rates.sample.file}")
+    private String imdbRatesJson;
+
+    public List<List<Rate>> computeMetacriticRates() {
+        String fileContent = FileManager.getFileContents(metacriticRatesJson);
 
         try {
-            JsonRate parsed = new Gson().fromJson(fileContent, JsonRate.class);
-            return parsed.toRateList();
+            JsonRateMetaWrapper parsed = new Gson().fromJson(fileContent, JsonRateMetaWrapper.class);
+            return JsonRateMetaWrapper.convertToRateList(parsed);
         } catch (JsonParseException ex) {
+            return null;
+        }
+    }
+
+    public List<List<Rate>> computeImdbRates() {
+        String fileContent = FileManager.getFileContents(imdbRatesJson);
+
+        try {
+            JsonRateImdbWrapper parsed = new Gson().fromJson(fileContent, JsonRateImdbWrapper.class);
+            return JsonRateImdbWrapper.convertToRateList(parsed);
+        } catch (Exception ex) {
             return null;
         }
     }
@@ -55,13 +66,13 @@ public class RateCalculationService {
     public PlatformTrust getTrustLevelForRates(final List<Rate> rates) {
         final int graphChanges = countGraphChanges(rates);
 
-        if (graphChanges > 1 ) {
+        if (graphChanges > 1) {
             return PlatformTrust.NEGATIVE;
         } else if (graphChanges == 0) {
             return PlatformTrust.NEUTRAL;
         } else if (graphChanges == 1) {
             final Reviewer probableReviewer = getProbableReviewerForRates(rates);
-            return probableReviewer == Reviewer.CRITIC? PlatformTrust.POSITIVE: PlatformTrust.NEGATIVE;
+            return probableReviewer == Reviewer.CRITIC ? PlatformTrust.POSITIVE : PlatformTrust.NEGATIVE;
         }
 
         return PlatformTrust.NEUTRAL;
@@ -100,5 +111,4 @@ public class RateCalculationService {
 
         return counter;
     }
-
 }

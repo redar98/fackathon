@@ -69,6 +69,14 @@ h2 {
     border-color: #dc3545;
 }
 
+#metacritic-logo {
+    content: url(../images/metacritic.png);
+}
+
+#imdb-logo {
+    content: url(../images/imdb.png);
+}
+
 .accounts-list-item {
     margin: 7px 0;
 }

@@ -61,9 +61,12 @@ public class MainController {
 
     @GetMapping("/rates")
     public String getRates(Model model) {
-        List<Rate> rates = rateCalculationService.computeRates();
-        if (rates != null) {
-            model.addAttribute("rateList", rates);
+        List<List<Rate>> metacriticRates = rateCalculationService.computeMetacriticRates();
+        List<List<Rate>> imdbRates = rateCalculationService.computeImdbRates();
+        if (metacriticRates != null && imdbRates != null) {
+            model.addAttribute("metaRateList", metacriticRates.get(0));
+            // FIXME: get average trust rating for all elements in list and return a single List<Rate>
+            model.addAttribute("imdbRateList", imdbRates);
         } else {
             model.addAttribute("messagePopup", MessagePopup.success("I did not like your Json!"));
             model.addAttribute("rateList", new ArrayList<>());

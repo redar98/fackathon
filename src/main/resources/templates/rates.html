@@ -12,13 +12,16 @@
 <body>
     <th:block th:include="partials/navbar :: navbar"></th:block>
 
+    <img id="metacritic-logo"/>
+    <img id="imdb-logo"/>
+
     <div class="container">
         <div class="row">
             <div class="col-12 pre-scrollable">
                 <div class="wrapper special-list fadeInDown">
                     <ul class="custom-list-group">
                         <h3 th:if="${#lists.isEmpty(rateList)}">There are no blocked domains at the moment...</h3>
-                        <li class="list-group-item accounts-list-item" id="domain-blocked" th:each="rate: ${rateList}">
+                        <li class="list-group-item accounts-list-item" id="domain-blocked" th:each="rate: ${metaRateList}">
                             <form th:action="@{/delete/rate}" method="post">
                                 <label class="accounts-label" th:text="${rate.number} + ' -- ' + ${rate.percentage} + '%'"></label>
 <!--                                <button type="submit" class="btn btn-success account-delete-btn">Grant Access</button>-->
